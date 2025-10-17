@@ -69,7 +69,7 @@ Notable points:
 * MMU starts memory translation process by locating the base address of PGD. MMU locates the base address from the `TTBRx_EL1` register which should be set by the kernel. TTBR = translation table base register.
 
   * bits [63-47] = 0xffff (all 1s). MMU uses `ttbr1_el1`. This is meant for the kernel space.
-  * bits [63-47] = 0x0 (all 1s). MMU uses `ttbr0_el1`. This is meant for the user process.
+  * bits [63-47] = 0x0 (all 0s). MMU uses `ttbr0_el1`. This is meant for the user process.
   * Each process has its own address space. Therefore, it has its own copy of page table tree, starting from PGD. Therefore, the kernel keeps a separate PGD base address for each process. That is, the kernel virtualizes PGD for processes. During a context switch, the kernel loads the PGD base of the next process to `ttbr0_el1`.
 
 * MMU walks the pgtable tree to look up the physical address. A virtual address uses only 48 out of 64 available bits.  When doing a translation, MMU splits an address into 4 parts:
