@@ -4,6 +4,10 @@
 void call_sys_write(char * buf);
 int call_sys_fork();
 void call_sys_exit();
+void call_sys_sem_new();
+void call_sys_sem_delete();
+void call_sys_sem_P();
+void call_sys_sem_v();
 
 extern void user_delay ( unsigned long);
 extern unsigned long get_sp ( void );

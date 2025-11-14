@@ -12,8 +12,9 @@
 #define FIRST_TASK task[0]
 #define LAST_TASK task[NR_TASKS-1]
 
-#define TASK_RUNNING				0
+#define TASK_RUNNING			0
 #define TASK_ZOMBIE				1
+#define TASK_BLOCKED			2
 
 #define PF_KTHREAD				0x00000002
 
@@ -57,6 +58,7 @@ struct mm_struct {
 struct task_struct {
 	struct cpu_context cpu_context;
 	long state;
+	int blocked_by;
 	long counter;
 	long priority;
 	long preempt_count;
