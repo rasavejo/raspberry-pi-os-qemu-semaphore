@@ -12,7 +12,7 @@ void sem_delete(unsigned long sem);
 void sem_p(unsigned long sem);
 
 void sem_v(unsigned long sem);
-
+unsigned int sem_count(unsigned long sem);
 
 
 
