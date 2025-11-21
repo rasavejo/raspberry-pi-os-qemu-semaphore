@@ -58,10 +58,10 @@ struct mm_struct {
 struct task_struct {
 	struct cpu_context cpu_context;
 	long state;
-	unsigned long blocked_by;
 	long counter;
 	long priority;
 	long preempt_count;
+	int blocked_by;
 	unsigned long flags;
 	struct mm_struct mm;
 };
