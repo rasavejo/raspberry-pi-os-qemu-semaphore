@@ -19,6 +19,12 @@ unsigned long sem_new(unsigned int count) {
     
 }
 
+unsigned int sem_count(unsigned long sem) {
+    disable_irq();
+    return SEM(sem) >> 16;
+    enable_irq();
+}
+
 void sem_delete(unsigned long sem) {
     disable_irq();
     SEM(sem) = 0;

@@ -30,59 +30,59 @@ void _schedule(void) {
                 next = i;
                 //	printf("task running c = %d\n\r", c);
                 //	printf("next = %d\n\r", next);
+            } else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) != 0) {
+                sem_p(p->blocked_by);
+            }
+            //	printf("in switch to\n\r");
+            if (c) {
+                break;
+            }
+            for (int i = 0; i < NR_TASKS; i++) {
+                p = task[i];
+                if (p) {
+                    p->counter = (p->counter >> 1) + p->priority;
+                }
             }
         }
-        //	printf("in switch to\n\r");
-        if (c) {
-            break;
+        switch_to(task[next]);
+        preempt_enable();
+    }
+
+    void schedule(void) {
+        printf("inside schedule \n");
+        current->counter = 0;
+        _schedule();
+    }
+
+    void switch_to(struct task_struct * next) {
+        if (current == next)
+            return;
+        struct task_struct *prev = current;
+        current = next;
+        set_pgd(next->mm.pgd);
+        cpu_switch_to(prev, next);
+    }
+    void schedule_tail(void) { preempt_enable(); }
+
+    void timer_tick() {
+        --current->counter;
+        if (current->counter > 0 || current->preempt_count > 0) {
+            return;
         }
+        current->counter = 0;
+        enable_irq();
+        _schedule();
+        disable_irq();
+    }
+
+    void exit_process() {
+        preempt_disable();
         for (int i = 0; i < NR_TASKS; i++) {
-            p = task[i];
-            if (p) {
-                p->counter = (p->counter >> 1) + p->priority;
+            if (task[i] == current) {
+                task[i]->state = TASK_ZOMBIE;
+                break;
             }
         }
+        preempt_enable();
+        schedule();
     }
-    switch_to(task[next]);
-    preempt_enable();
-}
-
-void schedule(void) {
-    printf("inside schedule \n");
-    current->counter = 0;
-    _schedule();
-}
-
-void switch_to(struct task_struct *next) {
-    if (current == next)
-        return;
-    struct task_struct *prev = current;
-    current = next;
-    set_pgd(next->mm.pgd);
-    cpu_switch_to(prev, next);
-}
-
-void schedule_tail(void) { preempt_enable(); }
-
-void timer_tick() {
-    --current->counter;
-    if (current->counter > 0 || current->preempt_count > 0) {
-        return;
-    }
-    current->counter = 0;
-    enable_irq();
-    _schedule();
-    disable_irq();
-}
-
-void exit_process() {
-    preempt_disable();
-    for (int i = 0; i < NR_TASKS; i++) {
-        if (task[i] == current) {
-            task[i]->state = TASK_ZOMBIE;
-            break;
-        }
-    }
-    preempt_enable();
-    schedule();
-}
