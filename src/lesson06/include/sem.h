@@ -3,7 +3,7 @@
 
 
 
-typedef unsigned int semaphore; // xxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyy with x the semaphore count and y a bitfield, the last one is whether the semaphore is currently used
+//semaphore :xxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyy with x the semaphore count and y a bitfield, the last one is whether the semaphore is currently used
 
 void sem_table_init();
 unsigned long sem_new(unsigned int count);

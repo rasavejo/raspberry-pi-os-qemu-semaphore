@@ -7,7 +7,6 @@
 
 void sys_write(char * buf);
 int sys_fork();
-
 void sys_exit();
 /*-----------SEMAPHORE-----------*/
 unsigned long sys_sem_new(unsigned int count);
