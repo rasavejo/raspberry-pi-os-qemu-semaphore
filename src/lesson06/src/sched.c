@@ -33,8 +33,11 @@ void _schedule(void)
 			if (p && p->state == TASK_RUNNING && p->counter > c) {
 				c = p->counter;
 				next = i;
+			//	printf("task running c = %d\n\r", c);
+			//	printf("next = %d\n\r", next);
 			}
 		}
+	//	printf("in switch to\n\r");
 		if (c) {
 			break;
 		}
