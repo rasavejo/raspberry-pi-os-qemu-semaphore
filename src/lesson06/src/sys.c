@@ -20,22 +20,22 @@ void sys_exit(){
 /*-----------SEMAPHORE-----------*/
 unsigned long sys_sem_new(unsigned int count){
 	printf("Acquire new sem\n");
-	sem_new(count);
+	return sem_new(count);
 
 }
 
-void sys_sem_delete(semaphore sem){
+void sys_sem_delete(unsigned long sem){
 	printf("Delete sem\n");
 	sem_delete(sem);
 
 }
-void sys_sem_p(semaphore sem){
+void sys_sem_p(unsigned long sem){
 	printf("Take sem\n");
 	sem_p(sem);
 
 }
 
-void sys_sem_v(semaphore sem){
+void sys_sem_v(unsigned long sem){
 	printf("Drop sem\n");
 	sem_v(sem);
 }

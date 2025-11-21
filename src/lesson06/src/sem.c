@@ -19,13 +19,13 @@ unsigned long sem_new(unsigned int count) {
     
 }
 
-void sem_delete(semaphore sem) {
+void sem_delete(unsigned long sem) {
     disable_irq();
     SEM(sem) = 0;
     enable_irq();
 }
 
-void block(semaphore sem) {
+void block(unsigned long sem) {
     disable_irq();
     current->state = TASK_BLOCKED;
     current->blocked_by = sem;
@@ -33,7 +33,7 @@ void block(semaphore sem) {
     schedule();
 }
 
-void sem_p(semaphore sem) {
+void sem_p(unsigned long sem) {
     if (SEM(sem) >> 16) {
         disable_irq();
         SEM(sem) -= 1 << 16;
@@ -43,7 +43,7 @@ void sem_p(semaphore sem) {
         block(sem);
 }
 
-void sem_v(semaphore sem) {
+void sem_v(unsigned long sem) {
     disable_irq();
     SEM(sem) += 1 << 16;
     enable_irq();

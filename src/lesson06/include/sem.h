@@ -8,10 +8,10 @@ typedef unsigned int semaphore; // xxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyy with x the s
 void sem_table_init();
 unsigned long sem_new(unsigned int count);
 
-void sem_delete(semaphore sem);
-void sem_p(semaphore sem);
+void sem_delete(unsigned long sem);
+void sem_p(unsigned long sem);
 
-void sem_v(semaphore sem);
+void sem_v(unsigned long sem);
 
 
 
