@@ -1,6 +1,7 @@
 #include "sched.h"
 #include "irq.h"
 #include "mm.h"
+#include "mm.h"
 #include "printf.h"
 #include "utils.h"
 
@@ -9,10 +10,15 @@ struct task_struct *current = &(init_task);
 struct task_struct *task[NR_TASKS] = {
     &(init_task),
 };
+struct task_struct *task[NR_TASKS] = {
+    &(init_task),
+};
 int nr_tasks = 1;
 
 void preempt_disable(void) { current->preempt_count++; }
+void preempt_disable(void) { current->preempt_count++; }
 
+void preempt_enable(void) { current->preempt_count--; }
 void preempt_enable(void) { current->preempt_count--; }
 
 void _schedule(void) {
@@ -48,11 +54,10 @@ void _schedule(void) {
         preempt_enable();
     }
 
-    void schedule(void) {
-        printf("inside schedule \n");
-        current->counter = 0;
-        _schedule();
-    }
+void schedule(void) {
+    current->counter = 0;
+    _schedule();
+}
 
     void switch_to(struct task_struct * next) {
         if (current == next)
