@@ -2,6 +2,7 @@
 #include "irq.h"
 #include "mm.h"
 #include "printf.h"
+#include "sem.h"
 #include "utils.h"
 
 static struct task_struct init_task = INIT_TASK;

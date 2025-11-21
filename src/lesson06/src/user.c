@@ -13,7 +13,7 @@ void loop(char *str) {
     }
 }
 
-void user_process() {
+void user_process_t1() {
     call_sys_write("User process\n\r");
     // int pid = call_sys_fork();
     unsigned long semaphore = call_sys_sem_new(1);
@@ -27,4 +27,20 @@ void user_process() {
         call_sys_write("Sem released \n");
     }
     call_sys_sem_delete(semaphore);
+}
+void user_process() {
+    call_sys_write("User process\n\r");
+    unsigned long semaphore = call_sys_sem_new(1);
+    call_sys_write("semaphore created \n");
+    int pid = call_sys_fork();
+    if (pid < 0) {
+        call_sys_write("Error during fork\n\r");
+        call_sys_exit();
+        return;
+    }
+    if (pid == 0) {
+        loop("abcde");
+    } else {
+        loop("12345");
+    }
 }
