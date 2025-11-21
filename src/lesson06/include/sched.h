@@ -64,6 +64,7 @@ struct task_struct {
 	long preempt_count;
 	unsigned long flags;
 	struct mm_struct mm;
+	unsigned long fut_va;
 };
 
 extern void sched_init(void);

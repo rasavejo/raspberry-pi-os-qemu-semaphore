@@ -7,6 +7,7 @@
 .set SYS_SEM_DELETE_NUMBER, 4
 .set SYS_SEM_P_NUMBER, 5
 .set SYS_SEM_V_NUMBER, 6
+.set SYS_FUT_GET_PAGE_NUMBER 7
 
 
 .globl user_delay
@@ -54,5 +55,11 @@ call_sys_sem_P:
 .globl call_sys_sem_v
 call_sys_sem_v:
 	mov w8, #SYS_SEM_V_NUMBER
+	svc #0
+	ret
+
+.globl call_sys_fut_get_page
+call_sys_fut_get_page:
+	mov w8, #SYS_FUT_GET_PAGE_NUMBER
 	svc #0
 	ret

@@ -36,6 +36,7 @@ void kernel_main()
 	irq_vector_init();
 	timer_init();
 	sem_table_init();
+	fut_table_init();
 //	generic_timer_init();
 	enable_interrupt_controller();
 	enable_irq();

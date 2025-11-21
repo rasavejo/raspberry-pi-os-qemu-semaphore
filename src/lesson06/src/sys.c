@@ -4,6 +4,7 @@
 #include "sched.h"
 #include "mm.h"
 #include "sem.h"
+#include "fut.h"
 
 
 void sys_write(char * buf){
@@ -40,5 +41,10 @@ void sys_sem_v(semaphore sem){
 	sem_v(sem);
 }
 
+void sys_fut_get_table() {
+	printf("Get futex table");
+	fut_get_table();
+}
 
-void * const sys_call_table[] = {sys_write, sys_fork, sys_exit,sys_sem_new,sys_sem_delete,sys_sem_p,sys_sem_v};
+
+void * const sys_call_table[] = {sys_write, sys_fork, sys_exit,sys_sem_new,sys_sem_delete,sys_sem_p,sys_sem_v,sys_fut_get_table};
