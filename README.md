@@ -20,7 +20,21 @@ We decided to implement all of those new operations in a new [sem.c](/src/lesson
 
 #### Creating a semaphore 
  ```
- 
+unsigned long sem_new(unsigned int count) {
+    disable_irq();
+    unsigned long sem = 0;
+    while ((SEM(sem)) % 2) {
+        sem++;
+    }
+    SEM(sem) = count << 16 | 1 ;
+    enable_irq(); 
+    return sem;
+}
+ ```
+
+A first thing to note is that for every operation made to 
+#####
+````
 #define SEM(s) *(unsigned long*)(sem_page + s)
 
 unsigned long sem_page;
@@ -29,14 +43,7 @@ void sem_table_init() {
     sem_page = allocate_kernel_page(); // already zeroed
 }
 
-unsigned long sem_new(unsigned int count) {
-    unsigned long sem = 0;
-    while ((SEM(sem)) % 2) sem++;
-    SEM(sem) = count << 16;
-    return sem;
-    
-}
- ```
+````
 #### Delecting a semaphore
  ```
  void sem_delete(unsigned long sem) {
