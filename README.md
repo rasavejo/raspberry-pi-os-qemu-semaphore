@@ -270,18 +270,26 @@ Finally, every function created was declared in its associated header file. We c
 
 ### Testing 
 
-Now that everything is implemented, we need to test in in order to ensure that the new code is working correctly. We decided to take two different approaches for the test : 
+Now that everything is implemented, we need to test it in order to ensure that the new code is working correctly. We decided to take two different approaches for the test : 
 
- - 
- -
+ - Static tests : we disable the preemption of the tasks, and create a new syscall to make them decide when to release the CPU. This method is usefull to be in control of which task has the CPU, and consequently be sure that the tasks are blocked as they should be.
+ - Dynamic tests : for those tests, the preempton is enable for the tasks, and the scenario will be more realistic but less deterministic. Those tests are adapted to the main code as there is no modification added to disable the interruption switching.
 
 #### 1 task and 1 semaphore 1 token
 
-The first test done is made of only one task and one semaphore. We first want to test weither a task can create a semaphore, take a token, enter the critical section and then release it. 
+The first test we did is made of only one task and one semaphore. We first wanted to test weither a task can create a semaphore, take a token, enter the critical section and then release it. 
 
 #### 2 task and 1 semaphore 1 token
 
-The second test ensure that if a task is asking for a token and there is not token available, then this task will be blocked until the token is released. 
+The second test ensure that if a task is asking for a token and there is not token available, then this task will be blocked until the token is released. We can also adapt this test and give two tokens to the semaphore to ensure that both tasks can take it without being blocked.
+
+#### 3 task and 1 semaphore 2 token
+
+A test a little more complicated than the previous one.
+
+#### 4 task and 2 semaphore , 1 and 2 tokens
+
+This test is made to ensure that taking and releasing a token from a semaphore will not affect the other semaphores. 
 
 ## V2 : Using Futex
 
