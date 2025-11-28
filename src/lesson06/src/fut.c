@@ -4,6 +4,8 @@
 #include "mm.h"
 #include "irq.h"
 
+unsigned long fut_page;
+
 #define FUT(s) *(unsigned long*)(fut_page + s)
 
 void fut_table_init() {
@@ -36,10 +38,10 @@ void block(unsigned long fut) {
 }
 
 void fut_p(unsigned long fut) {
-    int blocked = fut_pasm(fut);
+    int blocked = fut_pasm(fut, fut_page);
     if (blocked) block(fut);
 }
 
 void fut_v(unsigned long fut) {
-    fut_vasm(fut);
+    fut_vasm(fut, fut_page);
 }

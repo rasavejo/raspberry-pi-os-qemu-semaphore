@@ -3,7 +3,6 @@
 
 
 
-unsigned long fut_page;
 
 
 unsigned long get_fut_page();

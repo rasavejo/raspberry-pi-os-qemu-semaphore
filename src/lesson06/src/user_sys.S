@@ -7,7 +7,7 @@
 .set SYS_SEM_DELETE_NUMBER, 4
 .set SYS_SEM_P_NUMBER, 5
 .set SYS_SEM_V_NUMBER, 6
-.set SYS_FUT_GET_PAGE_NUMBER 7
+.set SYS_FUT_GET_PAGE_NUMBER, 7
 
 
 .globl user_delay

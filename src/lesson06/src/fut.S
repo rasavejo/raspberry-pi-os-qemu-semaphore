@@ -1,17 +1,18 @@
 .globl fut_pasm
 fut_pasm :
-    mov x16, =fut_page
-    add x16,x0,x16
+    add x1,x0,x1
 
 
 fut_p_try :
 
-    LDXR x0,[x16]
+    LDXR x0,[x1]
     CMP x0,#0
-    MOVEQ x0, #1
-    RETEQ
+    BNE fut_p_true
+    MOV x0, #1
+    RET
+fut_p_true : 
     SUB x0, x0, #1
-    STXR w0,x1,[x16]
+    STXR w0,x2,[x1]
     CMP x0,#0
     BNE fut_p_try
     
@@ -20,13 +21,12 @@ fut_p_try :
 
 .globl fut_vasm
 fut_vasm :
-    mov x16, =fut_page
-    add x16,x0,x16
+    add x1,x0,x1
 fut_v_try :
 
-    LDXR x0,[x16]
+    LDXR x0,[x1]
     ADD x0, x0, #1
-    STXR w0,x1,[x16]
+    STXR w0,x2,[x1]
     CMP x0,#0
     BNE fut_v_try
     

@@ -8,7 +8,6 @@
 #include "fork.h"
 #include "sched.h"
 #include "sem.h"
-#include "fut.h"
 
 #include "mini_uart.h"
 #include "sys.h"

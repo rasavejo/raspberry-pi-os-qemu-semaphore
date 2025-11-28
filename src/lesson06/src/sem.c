@@ -25,7 +25,7 @@ void sem_delete(semaphore sem) {
     enable_irq();
 }
 
-void block(semaphore sem) {
+void block_fut(semaphore sem) {
     disable_irq();
     current->state = TASK_BLOCKED;
     current->blocked_by = sem;
@@ -40,7 +40,7 @@ void sem_p(semaphore sem) {
         enable_irq();
     }
     else
-        block(sem);
+        block_fut(sem);
 }
 
 void sem_v(semaphore sem) {
