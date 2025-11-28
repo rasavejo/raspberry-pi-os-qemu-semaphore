@@ -1,6 +1,6 @@
 # Implementing semaphore in a bare-metal Aarch64 environnment for RaspberryPi 3 !
 
-Adding semaphores to the teaching mini-OS previously used in learning how OSes work.
+Adding semaphores to the mini-OS previously used to learn how OSes work.
 
 ## Goal 
 
@@ -12,9 +12,11 @@ The semaphores are base on two main operations : P and V.
  - The P operation allows a process to take a token from the semaphore. If a token is available, the process can immediatly take it and enter the critical section. In the opposite, if there is no token available, the process will enters a blocked state until a new token is released. 
  - Once a process wants to leave the critical section, it can call the V operation which will release the token. 
 
-In addition to the P and V operation, we also need to implement 2 more functions to create and delete semaphores. In the user process, the semaphores needs to be initialized before the creation of the childs process in order for them to access it. 
+In addition to the P and V operations, we also need to implement 2 more functions to create and delete semaphores. 
 
-We decided to implement all of those new operations in a [sem.c](/src/lesson06/src/sem.c) file. 
+[side note] In the user process, the semaphores needs to be initialized before the creation of the childs process in order for them to access it. 
+
+We decided to implement all of those new operations in a new [sem.c](/src/lesson06/src/sem.c) file. 
 
 #### Creating a semaphore 
  ```
