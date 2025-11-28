@@ -35,8 +35,9 @@ void _schedule(void)
 				c = p->counter;
 				next = i;
 			}
-			else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) != 0) {
-                 sem_p(p->blocked_by);
+			else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) > 0) {
+                sem_p(p->blocked_by);
+				p->state = TASK_RUNNING;
             }
 		}
 		if (c) {

@@ -39,25 +39,23 @@ void user_process() {
         return;
     }
     if (pid == 0) {
-      //  loop("abcde");
-        call_sys_write("P0 whant to take the semaphore\n\r");
+        user_delay(1000000);
+        call_sys_write("P0 want to take the semaphore\n\r");
         call_sys_sem_P(semaphore);
         call_sys_write("P0 has the token ! yeay !\n\r");
         user_delay(1000000000);
         call_sys_write("P0 now wants to leave critical section\n\r");
         call_sys_sem_V(semaphore);
         call_sys_write("P0 has released the token \n\r");
+
     } else {
-       // loop("1234");
-      //  loop("12345");
-        user_delay(1000000);
-        call_sys_write("P1 whant to take the semaphore\n\r");
+        call_sys_write("P1 want to take the semaphore\n\r");
         call_sys_sem_P(semaphore);
         call_sys_write("P1 has the token ! yeay !\n\r");
         user_delay(1000000000);
         call_sys_write("P1 now wants to leave critical section\n\r");
         call_sys_sem_V(semaphore);
-        call_sys_write("P1 has released the token \n\r");
+        call_sys_write("P1 has released the token\n\r");
     }
     loop("");
 }
