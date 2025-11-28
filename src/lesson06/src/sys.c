@@ -26,5 +26,9 @@ void sys_sem_v(unsigned long sem) {
     sem_v(sem);
 }
 
+void sys_yield() {
+    schedule();
+}
+
 void *const sys_call_table[] = {sys_write,      sys_fork,  sys_exit, sys_sem_new,
-                                sys_sem_delete, sys_sem_p, sys_sem_v};
+                                sys_sem_delete, sys_sem_p, sys_sem_v, sys_yield};

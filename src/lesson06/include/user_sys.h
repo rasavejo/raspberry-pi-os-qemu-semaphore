@@ -8,6 +8,7 @@ unsigned long call_sys_sem_new(unsigned int count);
 void call_sys_sem_delete(unsigned long sem);
 void call_sys_sem_P();
 void call_sys_sem_V();
+void yield();
 
 extern void user_delay ( unsigned long);
 extern unsigned long get_sp ( void );

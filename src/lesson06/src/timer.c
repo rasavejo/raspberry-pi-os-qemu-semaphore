@@ -27,7 +27,7 @@ void handle_timer_irq( void )
 	curVal += interval;
 	put32(TIMER_C1, curVal);
 	put32(TIMER_CS, TIMER_CS_M1);
-	timer_tick();
+	//timer_tick(); // DISABLE PREEMPTION
 }
 
 /* 	These are for Arm generic timer.

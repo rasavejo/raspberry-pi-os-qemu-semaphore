@@ -7,6 +7,7 @@
 .set SYS_SEM_DELETE_NUMBER, 4
 .set SYS_SEM_P_NUMBER, 5
 .set SYS_SEM_V_NUMBER, 6
+.set SYS_YIELD, 7
 
 
 .globl user_delay
@@ -54,5 +55,11 @@ call_sys_sem_P:
 .globl call_sys_sem_V
 call_sys_sem_V:
 	mov w8, #SYS_SEM_V_NUMBER
+	svc #0
+	ret
+
+.globl yield
+yield:
+	mov w8, #SYS_YIELD
 	svc #0
 	ret

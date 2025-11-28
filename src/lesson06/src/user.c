@@ -12,25 +12,22 @@ void loop(char *str) {
         }
     }
 }
-
+// test blocage d'une sémaphore
 void user_process_t1() {
     call_sys_write("User process\n\r");
     // int pid = call_sys_fork();
     unsigned long semaphore = call_sys_sem_new(1);
-    while (1) {
-
-        call_sys_write("Semaphore called \n");
-        call_sys_write("Asked token \n");
-        call_sys_sem_P(semaphore);
-        call_sys_write("autoroutepardon! \n");
-        call_sys_sem_V(semaphore);
-        call_sys_write("Sem released \n");
-    }
+    call_sys_write("Semaphore called \n");
+    call_sys_write("Asked token \n");
+    call_sys_sem_P(semaphore);
+    call_sys_write("I am in a critical section\n");
+    call_sys_sem_V(semaphore);
+    call_sys_write("Sem released \n");
     call_sys_sem_delete(semaphore);
 }
 
-void user_process() {
-    call_sys_write("User process\n\r");
+// test blocage d'une sémaphore
+void user_process_t2(){
     unsigned long semaphore = call_sys_sem_new(1);
     int pid = call_sys_fork();
     if (pid < 0) {
@@ -39,11 +36,10 @@ void user_process() {
         return;
     }
     if (pid == 0) {
-        user_delay(1000000);
         call_sys_write("P0 want to take the semaphore\n\r");
         call_sys_sem_P(semaphore);
         call_sys_write("P0 has the token ! yeay !\n\r");
-        user_delay(1000000000);
+        user_delay(100000000);
         call_sys_write("P0 now wants to leave critical section\n\r");
         call_sys_sem_V(semaphore);
         call_sys_write("P0 has released the token \n\r");
@@ -52,10 +48,16 @@ void user_process() {
         call_sys_write("P1 want to take the semaphore\n\r");
         call_sys_sem_P(semaphore);
         call_sys_write("P1 has the token ! yeay !\n\r");
-        user_delay(1000000000);
+        yield();
         call_sys_write("P1 now wants to leave critical section\n\r");
         call_sys_sem_V(semaphore);
         call_sys_write("P1 has released the token\n\r");
+        yield();
     }
+}
+
+void user_process() {
+    call_sys_write("User process\n\r");
+    user_process_t2();
     loop("");
 }
