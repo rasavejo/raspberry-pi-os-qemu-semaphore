@@ -1,4 +1,5 @@
 #include "fut.h"
+#include "futasm.h"
 #include "sched.h"
 #include "mm.h"
 #include "irq.h"
@@ -32,4 +33,13 @@ void block(unsigned long fut) {
     current->blocked_by = fut;
     enable_irq();
     schedule();
+}
+
+void fut_p(unsigned long fut) {
+    int blocked = fut_pasm(fut);
+    if (blocked) block(fut);
+}
+
+void fut_v(unsigned long fut) {
+    fut_vasm(fut);
 }

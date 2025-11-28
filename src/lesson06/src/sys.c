@@ -22,7 +22,6 @@ void sys_exit(){
 unsigned long sys_sem_new(unsigned int count){
 	printf("Acquire new sem\n");
 	sem_new(count);
-
 }
 
 void sys_sem_delete(semaphore sem){
@@ -43,7 +42,7 @@ void sys_sem_v(semaphore sem){
 
 void sys_fut_get_table() {
 	printf("Get futex table");
-	fut_get_table();
+	get_fut_page();
 }
 
 

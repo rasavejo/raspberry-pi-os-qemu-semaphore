@@ -1,5 +1,5 @@
-#ifndef _SEM_H
-#define _SEM_H
+#ifndef _FUT_H
+#define _FUT_H
 
 
 
@@ -10,8 +10,8 @@ unsigned long get_fut_page();
 void fut_table_init();
 unsigned long sem_new(unsigned int count);
 
-void fut_delete(unsigned long sem);
-void fut_p(unsigned long sem);
+void fut_delete(unsigned long fut);
+void fut_p(unsigned long fut);
 
 void fut_v(unsigned long fut);
 
