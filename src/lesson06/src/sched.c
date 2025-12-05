@@ -14,7 +14,39 @@ int nr_tasks = 1;
 
 void preempt_disable(void) { current->preempt_count++; }
 
-void preempt_enable(void) { current->preempt_count--; }
+void _schedule(void)
+{
+	preempt_disable();
+	int next,c;
+	struct task_struct * p;
+	while (1) {
+		c = -1;
+		next = 0;
+		for (int i = 0; i < NR_TASKS; i++){
+			p = task[i];
+			if (p && p->state == TASK_RUNNING && p->counter > c) {
+				c = p->counter;
+				next = i;
+			//	printf("task running c = %d\n\r", c);
+			//	printf("next = %d\n\r", next);
+			} else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) != 0) {
+                                sem_p(p->blocked_by);
+                        
+		}
+	//	printf("in switch to\n\r");
+		if (c) {
+			break;
+		}
+		for (int i = 0; i < NR_TASKS; i++) {
+			p = task[i];
+			if (p) {
+				p->counter = (p->counter >> 1) + p->priority;
+			}
+		}
+	}
+	switch_to(task[next]);
+	preempt_enable();
+}
 
 void _schedule(void) {
     preempt_disable();
