@@ -2,6 +2,7 @@
 #include "sched.h"
 #include "fork.h"
 #include "utils.h"
+#include "printf.h"
 #include "entry.h"
 #include "fut.h"
 
@@ -30,6 +31,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 	p->priority = current->priority;
 	p->state = TASK_RUNNING;
 	p->counter = p->priority;
+	p->blocked_by = -1;
 	p->preempt_count = 1; //disable preemtion until schedule_tail
 
 	p->cpu_context.pc = (unsigned long)ret_from_fork;
