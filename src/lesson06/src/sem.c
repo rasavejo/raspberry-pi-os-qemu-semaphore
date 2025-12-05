@@ -42,22 +42,18 @@ void sem_delete(unsigned long sem) {
     enable_irq();
 }
 
-void block(unsigned long sem) {
-    disable_irq();
-    current->state = TASK_BLOCKED;
-    current->blocked_by = sem;
-    enable_irq();
-    schedule();
-}
-
 void sem_p(unsigned long sem) {
-    if (SEM(sem) >> 16) {
         disable_irq();
+    if (SEM(sem) >> 16) {
         SEM(sem) -= 1 << 16;
         enable_irq();
     }
-    else
-        block(sem);
+    else {
+        current->state = TASK_BLOCKED;
+        current->blocked_by = sem;
+        enable_irq();
+        schedule();
+    }
 }
 
 void sem_v(unsigned long sem) {

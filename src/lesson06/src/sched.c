@@ -29,9 +29,10 @@ void _schedule(void)
 				next = i;
 			//	printf("task running c = %d\n\r", c);
 			//	printf("next = %d\n\r", next);
-			} else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) != 0) {
-                                sem_p(p->blocked_by);
-                        
+            } else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) != 0) {
+                sem_p(p->blocked_by);
+                p->state = TASK_RUNNING;
+            }
 		}
 	//	printf("in switch to\n\r");
 		if (c) {
