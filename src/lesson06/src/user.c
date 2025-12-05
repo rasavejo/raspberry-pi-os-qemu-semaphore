@@ -13,49 +13,101 @@ void loop(char *str) {
     }
 }
 
-void user_process_t1() {
-    call_sys_write("User process\n\r");
-    // int pid = call_sys_fork();
-    unsigned long semaphore = call_sys_sem_new(1);
-    while (1) {
+// void user_process_t1() {
+//     call_sys_write("User process\n\r");
+//     // int pid = call_sys_fork();
+//     unsigned long semaphore = call_sys_sem_new(1);
+//     while (1) {
 
-        call_sys_write("Semaphore called \n");
-        call_sys_write("Asked token \n");
+//         call_sys_write("Semaphore called \n");
+//         call_sys_write("Asked token \n");
+//         call_sys_sem_P(semaphore);
+//         call_sys_write("autoroutepardon! \n");
+//         call_sys_sem_V(semaphore);
+//         call_sys_write("Sem released \n");
+//     }
+//     call_sys_sem_delete(semaphore);
+// }
+
+// void user_process() {
+//     call_sys_write("User process\n\r");
+//     unsigned long semaphore = call_sys_sem_new(1);
+//     int pid = call_sys_fork();
+//     if (pid < 0) {
+//         call_sys_write("Error during fork\n\r");
+//         call_sys_exit();
+//         return;
+//     }
+//     if (pid == 0) {
+//         user_delay(1000000);
+//         call_sys_write("P0 want to take the semaphore\n\r");
+//         call_sys_sem_P(semaphore);
+//         call_sys_write("P0 has the token ! yeay !\n\r");
+//         user_delay(1000000000);
+//         call_sys_write("P0 now wants to leave critical section\n\r");
+//         call_sys_sem_V(semaphore);
+//         call_sys_write("P0 has released the token \n\r");
+
+//     } else {
+//         call_sys_write("P1 want to take the semaphore\n\r");
+//         call_sys_sem_P(semaphore);
+//         call_sys_write("P1 has the token ! yeay !\n\r");
+//         user_delay(1000000000);
+//         call_sys_write("P1 now wants to leave critical section\n\r");
+//         call_sys_sem_V(semaphore);
+//         call_sys_write("P1 has released the token\n\r");
+//     }
+//     loop("");
+// }
+
+void v1_dynamic_test0() {
+    call_sys_write("We will test the v1 through dynamic testing \n");
+    unsigned long semaphore = call_sys_sem_new(1);
+    int pid = call_sys_fork();
+    int i = 0;
+
+    while (1) {
+        if (pid == 0) {
+            call_sys_write("Child: Asking token\n");
+            // loop("1234");
+        } else {
+            call_sys_write("Parent: Asking token\n");
+            // loop("haha");
+        }
+
         call_sys_sem_P(semaphore);
-        call_sys_write("autoroutepardon! \n");
+
+        if (pid == 0)
+            call_sys_write("Child: In critical section\n");
+        else
+            call_sys_write("Parent: In critical section\n");
+
+        // Random delay to force interleavings
+        if (pid == 0)
+            call_sys_write("01234");
+        else
+            call_sys_write("56789");
+        user_delay(100000);
+
         call_sys_sem_V(semaphore);
-        call_sys_write("Sem released \n");
+
+        if (pid == 0)
+            call_sys_write("Child: Released token\n");
+        else
+            call_sys_write("Parent: Released token\n");
+
+        // i++;
+        user_delay(100000);
     }
-    call_sys_sem_delete(semaphore);
+    // i = 0;
+
+    call_sys_write("End of test \n");
+    // call_sys_sem_delete(semaphore);
 }
 
 void user_process() {
-    call_sys_write("User process\n\r");
-    unsigned long semaphore = call_sys_sem_new(1);
-    int pid = call_sys_fork();
-    if (pid < 0) {
-        call_sys_write("Error during fork\n\r");
-        call_sys_exit();
-        return;
-    }
-    if (pid == 0) {
-        user_delay(1000000);
-        call_sys_write("P0 want to take the semaphore\n\r");
-        call_sys_sem_P(semaphore);
-        call_sys_write("P0 has the token ! yeay !\n\r");
-        user_delay(1000000000);
-        call_sys_write("P0 now wants to leave critical section\n\r");
-        call_sys_sem_V(semaphore);
-        call_sys_write("P0 has released the token \n\r");
-
-    } else {
-        call_sys_write("P1 want to take the semaphore\n\r");
-        call_sys_sem_P(semaphore);
-        call_sys_write("P1 has the token ! yeay !\n\r");
-        user_delay(1000000000);
-        call_sys_write("P1 now wants to leave critical section\n\r");
-        call_sys_sem_V(semaphore);
-        call_sys_write("P1 has released the token\n\r");
-    }
+    call_sys_write("Inside user process \n");
+    v1_dynamic_test0();
+    call_sys_write("end of user process \n");
     loop("");
 }
