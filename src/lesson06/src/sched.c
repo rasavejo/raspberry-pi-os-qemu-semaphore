@@ -34,7 +34,7 @@ void _schedule(void) {
             }
         }
         if (c) {
-            printf("\nRunnung with value %d and next %d \n\n", c, next);
+           // printf("\nRunnung with value %d and next %d \n\n", c, next);
             break;
         }
         for (int i = 0; i < NR_TASKS; i++) {

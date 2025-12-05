@@ -26,8 +26,9 @@ unsigned long sem_new(unsigned int count) {
 
 unsigned int sem_count(unsigned long sem) {
     disable_irq();
-    return SEM(sem) >> 16;
+    int count = SEM(sem) >> 16;
     enable_irq();
+    return count;
 }
 
 void sem_delete(unsigned long sem) {
@@ -37,21 +38,21 @@ void sem_delete(unsigned long sem) {
 }
 
 void block(unsigned long sem) {
-    disable_irq();
     current->state = TASK_BLOCKED;
     current->blocked_by = sem;
-    enable_irq();
     schedule();
 }
 
 void sem_p(unsigned long sem) {
+    disable_irq();
     if (SEM(sem) >> 16) {
-        disable_irq();
+        
         SEM(sem) -= 1 << 16;
-        enable_irq();
+        
     }
     else
         block(sem);
+    enable_irq();
 }
 
 void sem_v(unsigned long sem) {
