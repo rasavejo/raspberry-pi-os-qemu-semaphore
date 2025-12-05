@@ -66,7 +66,7 @@ void v1_dynamic_test0() {
     int pid = call_sys_fork();
     int i = 0;
 
-    while (1) {
+    for (int i = 0; i < 3; i++) {
         if (pid == 0) {
             call_sys_write("Child: Asking token\n");
             // loop("1234");
