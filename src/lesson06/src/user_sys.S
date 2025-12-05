@@ -51,8 +51,8 @@ call_sys_sem_P:
 	svc #0
 	ret
 
-.globl call_sys_sem_v
-call_sys_sem_v:
+.globl call_sys_sem_V
+call_sys_sem_V:
 	mov w8, #SYS_SEM_V_NUMBER
 	svc #0
 	ret

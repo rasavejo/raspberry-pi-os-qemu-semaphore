@@ -2,8 +2,10 @@
 #include "sched.h"
 #include "mm.h"
 #include "irq.h"
+#include "printf.h"
 
-#define SEM(s) *(unsigned long*)(sem_page + s)
+// represents the content of the semaphore number s
+#define SEM(s) * (unsigned long*) ( sem_page + s*32)
 
 unsigned long sem_page;
 
@@ -12,11 +14,20 @@ void sem_table_init() {
 }
 
 unsigned long sem_new(unsigned int count) {
+    disable_irq();
     unsigned long sem = 0;
-    while ((SEM(sem)) % 2) sem++;
-    SEM(sem) = count << 16;
+    while ((SEM(sem)) % 2) {
+        sem++;
+    }
+    SEM(sem) = count << 16 | 1 ;
+    enable_irq(); 
     return sem;
-    
+}
+
+unsigned int sem_count(unsigned long sem) {
+    disable_irq();
+    return SEM(sem) >> 16;
+    enable_irq();
 }
 
 unsigned int sem_count(unsigned long sem) {
