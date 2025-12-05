@@ -21,7 +21,7 @@ void sys_exit(){
 /*-----------SEMAPHORE-----------*/
 unsigned long sys_sem_new(unsigned int count){
 	printf("Acquire new sem\n");
-	sem_new(count);
+	return sem_new(count);
 }
 
 void sys_sem_delete(semaphore sem){
@@ -40,10 +40,15 @@ void sys_sem_v(semaphore sem){
 	sem_v(sem);
 }
 
-void sys_fut_get_table() {
-	printf("Get futex table");
+void sys_fut_get_page() {
+	printf("Get futex table\n");
 	get_fut_page();
 }
 
+void sys_fut_block(unsigned long fut) {
+	printf("Blocking task %s\n",fut);
+	fut_block(fut);
+}
 
-void * const sys_call_table[] = {sys_write, sys_fork, sys_exit,sys_sem_new,sys_sem_delete,sys_sem_p,sys_sem_v,sys_fut_get_table};
+
+void * const sys_call_table[] = {sys_write, sys_fork, sys_exit,sys_sem_new,sys_sem_delete,sys_sem_p,sys_sem_v,sys_fut_get_page,sys_fut_block};

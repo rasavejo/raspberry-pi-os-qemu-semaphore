@@ -14,6 +14,8 @@ void fut_p(unsigned long fut);
 
 void fut_v(unsigned long fut);
 
+void fut_block(unsigned long fut);
+
 
 
 

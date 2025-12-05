@@ -16,7 +16,6 @@ unsigned long sem_new(unsigned int count) {
     while ((SEM(sem)) % 2) sem++;
     SEM(sem) = count << 16;
     return sem;
-    
 }
 
 void sem_delete(semaphore sem) {

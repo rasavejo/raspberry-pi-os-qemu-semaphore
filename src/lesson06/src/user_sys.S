@@ -8,6 +8,7 @@
 .set SYS_SEM_P_NUMBER, 5
 .set SYS_SEM_V_NUMBER, 6
 .set SYS_FUT_GET_PAGE_NUMBER, 7
+.set SYS_FUT_BLOCK_NUMBER, 8
 
 
 .globl user_delay
@@ -61,5 +62,11 @@ call_sys_sem_v:
 .globl call_sys_fut_get_page
 call_sys_fut_get_page:
 	mov w8, #SYS_FUT_GET_PAGE_NUMBER
+	svc #0
+	ret
+
+.globl call_sys_block
+call_sys_fut_block:
+	mov w8, #SYS_FUT_BLOCK_NUMBER
 	svc #0
 	ret
