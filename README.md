@@ -1,6 +1,6 @@
-# Implementing semaphore in a bare-metal Aarch64 environnment for RaspberryPi 3 !
+# Implementing semaphores in a bare-metal Aarch64 environment for RaspberryPi 3 !
 
-Adding semaphores to the mini-OS previously used to learn how OSes work.
+Adding semaphores to the mini-OS, previously used to learn how OSes work.
 
 ## Goal 
 
@@ -8,23 +8,23 @@ Adding semaphores to the mini-OS previously used to learn how OSes work.
 
 ### Semaphores operations
 
-The semaphores are base on two main operations : P and V.
- - The P operation allows a process to take a token from the semaphore. If a token is available, the process can immediatly take it and enter the critical section. In the opposite, if there is no token available, the process will enters a blocked state until a new token is released. 
- - Once a process wants to leave the critical section, it can call the V operation which will release the token. 
+The semaphores are based on two main operations : P and V.
+ - The P operation allows a process to take a token from the semaphore. If a token is available, the process can immediately take it and enter the critical section. Conversely, if there is no token available, the process will enter a blocked state until a new token is released. 
+ - Once a process wants to leave the critical section, it can call the V operation, which will release the token. 
 
 In addition to the P and V operations, we also need to implement 2 more functions to create and delete semaphores. 
 
-[side note] In the user process, the semaphores needs to be initialized before the creation of the childs process in order for them to access it. 
+[side note] In the user process, the semaphores needs to be initialized before the creation of the child process in order for them to access it. 
 
-We decided to implement all of those new operations in a new [sem.c](/src/lesson06/src/sem.c) file. 
+We decided to implement all of these new operations in a new [sem.c](/src/lesson06/src/sem.c) file. 
 
 #### How are semaphores implemented ?
 
-Before explaining the implementation of the different operations, you may first need to understand how we implemented the semaphore system. As the users can create multiple semaphore, we decided to allocate an entire kernel page dedicated to the semaphores. This page will contains all the 32-bits long semaphores created. A semaphore is organized as such :
+Before explaining the implementation of the different operations, you may first need to understand how the semaphore system is implemented. As users can create multiple semaphores, we decided to allocate an entire kernel page dedicated for this purpose. This page contains all of the 32-bits long semaphores created. A semaphore is organized as such :
 
 ![Semaphore implementation](./docs/semaphore.jpg "")
 
-The 16 most significant bits are used to store the counter. Each time a token is seized, the counter decrements until reaching 0 (the 16 MSB are equals to 0). The other bits ( 16 LSB bits) are used as flags to provide information on the specific semaphore. Currently, only the bit 0 is used to indicate weither the semaphore as been created or not (0 means that the slot is free, and 1 means that this is an active semaphore).
+The 16 upper bits are used to store the counter. Each time a token is seized, the counter decrements until reaching 0 (the 16 MSB are equal to 0). The other bits ( 16 LSB bits) are used as flags to provide information on the specific semaphore. Currently, only the bit 0 is used to indicate whether the semaphore has been created or not (0 means that the slot is free, and 1 means the semaphore is active).
 
 To allocate the page containing all the semaphores, we simply created a function called ```sem_table_init``` that calls upon ```allocate_kernel_page``` to retrieve a page. This page is stored as a global variable accessible by each semaphore operation. 
 
@@ -39,12 +39,13 @@ void sem_table_init() {
 Finally, to retrieve the 32 bits associated with a specific semaphore, we created a macro called SEM : 
 
 ````c
-#define SEM(s) * (unsigned long*) ( sem_page + s*32) //return the content of the semaphore number s
+#define SEM(s) * (unsigned long*) ( sem_page + s*32) 
+//Returns the content of the semaphore number s
 ````
 
 #### Creating a semaphore 
 
-The creation of a semaphore is quite straitfoward. It only requires the number of token associated with the semaphore, ans returns the index associated with the newly created one. 
+The creation of a semaphore is quite straightfoward. It only requires the number of tokens associated with the semaphore and returns the index associated with the newly created one. 
 
 ```c
 unsigned long sem_new(unsigned int count) {
@@ -59,11 +60,11 @@ unsigned long sem_new(unsigned int count) {
 }
  ```
 
-A first thing to note is that we disable the interruptions during every semaphore operations. We did it to prevent any unexpected context switch during the operations, as they are considered critical sections. Then, we parkour the page until finding a semaphore slot that is free -- meaning that its bit 0 is equal to 0. Once a free slot is found at index ```sem```, we can initialize its counter with the number of token available and set its bit 0 to 1 in order to mark it as a "used slot". Finally, we enable the interruptions again before returning the newly created semaphore. 
+A first thing to note is that we disable the interruptions during all semaphore operations. We did it to prevent any unexpected context switch during the operations, as they are considered critical sections. Then, we traverse the page until finding a semaphore slot that is free -- meaning that its bit 0 is equal to 0. Once a free slot is found at index ```sem```, we can initialize its counter with the number of token available and set its bit 0 to 1 in order to mark it as an "active slot". Finally, we enable the interruptions again before returning the newly created semaphore. 
 
 #### Delecting a semaphore
 
-The delection of a semaphore doesn't break 3 duck's legs. We simply set the given semaphore with the value 0. Consequently, when searching for free slots, this semaphore's slot will be available for purchase. 
+The deletion of a semaphore doesn't break 3 duck's legs. We simply set the given semaphore with the value 0. Consequently, when searching for free slots, this semaphore's slot will be available for purchase. 
 
 ```c
 void sem_delete(unsigned long sem) {
@@ -75,7 +76,7 @@ void sem_delete(unsigned long sem) {
 #### Taking a token
 
 
-In order to take a token from the given semaphore, we first need to confirm weither this semaphore as any token left of not. If it does, then its counter is reduced by 1, the functions returns and the process continues running in the critical section. On the other hands, if there is no token available, the current process is blocked.
+In order to take a token from the given semaphore, we first need to confirm whether this semaphore has any token left or not. If it does, then its counter is decremented, the functions returns and the process continues running in the critical section. On the other hand, if there is no token available, the current process is blocked.
 ```c
  void sem_p(unsigned long sem) {
     if (SEM(sem) >> 16) {
@@ -129,7 +130,7 @@ struct task_struct {
 };
 ```
 
-The place were the new field ```blocked_by``` is added in ```task_struct``` is very important because it is used to set its default value : 
+The place where the new field ```blocked_by``` is added in ```task_struct``` is very important because it is used to set its default value : 
 
 ```c
 /* state etc */	 0,0,15, 0, -1,  PF_KTHREAD, \
@@ -191,7 +192,7 @@ With the unblocking operation already implemented in the scheduler, the release 
  ```
 ### Creating new syscalls
 
-As of now, we only implemented functions that are available in a kernel space. However, our final goal is to have them available in different user processes. Therefore, to make them accessible from a user environnment, the first version of this project uses ```syscalls```.  
+As of now, we only implemented functions that are available in the kernel space. However, our final goal is to have them available in different user processes. Therefore, to make them accessible from a user environnment, the first version of this project uses ```syscalls```.  
 Consequently, 4 new syscalls needs to be added to our bare-metal environnment : 
  - ```sys_sem_new``` : Creates a new semaphore
  - ```sys_sem_p``` : Takes a semaphore token 
@@ -222,7 +223,7 @@ void *const sys_call_table[] = {sys_write, sys_fork,  sys_exit,
                                 sys_sem_new, sys_sem_delete, sys_sem_p, sys_sem_v}; // the new syscalls added
  ```
 
-For the user to reach those syscalls, a privilege escalation is required. The functions in charge of doing it are declared in the [user_sys.h](/src/lesson06/include/user_sys.h) file and implemented in the [user_sys.S](/src/lesson06/src/user_sys.S) file. In the [user_sys.S](/src/lesson06/src/user_sys.S) file, we implemented a function for each associated syscall : 
+For the user to reach those syscalls, a privilege escalation is required. The functions in charge of doing so are declared in the [user_sys.h](/src/lesson06/include/user_sys.h) file and implemented in the [user_sys.S](/src/lesson06/src/user_sys.S) file. In the [user_sys.S](/src/lesson06/src/user_sys.S) file, we implemented a function for each associated syscall : 
 
  ```assembly
 
@@ -272,27 +273,38 @@ Finally, every function created was declared in its associated header file. We c
 
 Now that everything is implemented, we need to test it in order to ensure that the new code is working correctly. We decided to take two different approaches for the test : 
 
- - Static tests : we disable the preemption of the tasks, and create a new syscall to make them decide when to release the CPU. This method is usefull to be in control of which task has the CPU, and consequently be sure that the tasks are blocked as they should be.
- - Dynamic tests : for those tests, the preempton is enable for the tasks, and the scenario will be more realistic but less deterministic. Those tests are adapted to the main code as there is no modification added to disable the interruption switching.
+ - Static tests : we disable the preemption of the tasks, and create a new syscall to make them decide when to release the CPU. This method is useful to be in control of which task has the CPU, and consequently be sure that the tasks are blocked as they should be.
+ - Dynamic tests : for those tests, the preemption is enabled for the tasks, and the scenario will be more realistic but less deterministic. Those tests are adapted to the main code as there is no modification added to disable the interruption switching.
 
-#### 1 task and 1 semaphore 1 token
+In our testing environment, we opted to fork the processes after initializing the semaphore using the sem_new function. This design choice ensures that the different tasks share the same semaphore instance. We made this implementation decision primarily to maintain code simplicity as this function isn't called with a syscall.
 
-The first test we did is made of only one task and one semaphore. We first wanted to test weither a task can create a semaphore, take a token, enter the critical section and then release it. 
+#### Static Testing
 
-#### 2 task and 1 semaphore 1 token
+##### 1 task and 1 semaphore 1 token
+
+The first test we did is made of only one task and one semaphore. We first wanted to test whether a task can create a semaphore, take a token, enter the critical section and then release it. 
+
+##### 2 tasks and 1 semaphore 1 token
 
 The second test ensure that if a task is asking for a token and there is not token available, then this task will be blocked until the token is released. We can also adapt this test and give two tokens to the semaphore to ensure that both tasks can take it without being blocked.
 
-#### 3 task and 1 semaphore 2 token
+##### 3 tasks and 1 semaphore 2 tokens
 
-A test a little more complicated than the previous one.
+A test a little more complicated than the previous one. Here, we have 3 tasks trying to take tokens from a semaphore with only 2 tokens available. The purpose of this test is to ensure that only 2 tasks can enter the critical section at the same time, and that the last one will be blocked until one of the other tasks release its token. In this case we ensure that the semaphore allows two tasks to work at the same time and that the number of token is taken into consideration.
 
-#### 4 task and 2 semaphore , 1 and 2 tokens
+##### 4 tasks and 2 semaphores , 1 and 2 tokens
 
 This test is made to ensure that taking and releasing a token from a semaphore will not affect the other semaphores. 
 
-## V2 : Using Futex
+#### Dynamic Testing 
 
+##### 2 tasks and 1 semaphore
+This test evaluates the exchange of the token between two tasks. During this test, we observed biased scheduling, with the parent process taking the token immediately after releasing it, thereby preventing the forked process from taking it. 
+In order to force the exchange and perform a context switch, we introduced a `user_delay` with a large period.
+
+##### 5 tasks and 1 semaphore
+The purpose of this test is to scale up the previous one to evaluate if the different tasks really exchange the token among one another and not just between two.
+Again, we had to introduce a `user_delay` to force the context switch and the token exchange.
 
 # Acknowledgements
 
