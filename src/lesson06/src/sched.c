@@ -13,7 +13,7 @@ struct task_struct *task[NR_TASKS] = {
 int nr_tasks = 1;
 
 void preempt_disable(void) { current->preempt_count++; }
-void preempt_enable(void) { current->preempt_count++; }
+void preempt_enable(void) { current->preempt_count--; }
 
 void _schedule(void)
 {

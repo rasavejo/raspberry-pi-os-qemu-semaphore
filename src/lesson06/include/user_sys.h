@@ -6,8 +6,8 @@ int call_sys_fork();
 void call_sys_exit();
 unsigned long call_sys_sem_new(unsigned int count);
 void call_sys_sem_delete(unsigned long sem);
-void call_sys_sem_P();
-void call_sys_sem_V();
+void call_sys_sem_P(unsigned long sem);
+void call_sys_sem_V(unsigned long sem);
 void call_sys_fut_get_page();
 void call_sys_fut_block();
 
