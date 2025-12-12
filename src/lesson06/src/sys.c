@@ -29,12 +29,10 @@ void sys_sem_v(unsigned long sem) {
 }
 
 void sys_fut_get_page() {
-	printf("Get futex table\n");
 	get_fut_page();
 }
 
 void sys_fut_block(unsigned long fut) {
-	printf("Blocking task %s\n",fut);
 	fut_block(fut);
 }
 

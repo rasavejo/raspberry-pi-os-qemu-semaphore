@@ -1,6 +1,7 @@
 #include "user.h"
 #include "printf.h"
 #include "user_sys.h"
+#include "fut.h"
 
 void loop(char *str) {
     char buf[2] = {""};
@@ -190,6 +191,11 @@ void sem_test_0() {
     call_sys_write("We will test the v1 through dynamic testing : 1 semaphore, 1 token and 2 tasks \n");
     unsigned long semaphore = call_sys_sem_new(1);
     int pid = call_sys_fork();
+    if (pid < 0) {
+        call_sys_write("Error during fork\n\r");
+        call_sys_exit();
+        return;
+    }
     switch(pid){
         case 0 :
             call_sys_write("[P0] Asking token\n");
@@ -216,35 +222,46 @@ void sem_test_0() {
 
 void fut_test_0() {
     call_sys_write("We will test the v1 through dynamic testing : 1 semaphore, 1 token and 2 tasks \n");
-    unsigned long page = sys_fut_get_page();
-    unsigned long semaphore = fut_new(page);
-    int pid = call_sys_fork();
+    unsigned long page = call_sys_fut_get_page();
+    if(page == -1){
+        call_sys_write("Error during retrieval of page futex\n\r");
+        call_sys_exit();
+    }
+    call_sys_write("Create new Futex\n");
+    unsigned long futex = fut_new(page, 1);
+    call_sys_write("Fut created\n");
+   /*  int pid = call_sys_fork();
+    if (pid < 0) {
+        call_sys_write("Error during fork\n\r");
+        call_sys_exit();
+        return;
+    }
     switch(pid){
         case 0 :
             call_sys_write("[P0] Asking token\n");
-            call_sys_sem_P(semaphore);
+            fut_p(page, futex);
             call_sys_write("[P0] In critical section\n");
             user_delay(400000000);
             call_sys_write("[P0] Release the token \n");
-            call_sys_sem_V(semaphore);
+            fut_v(page, futex);
             call_sys_write("[P0] Finished \n");
             break;
         default : 
             call_sys_write("[P2] wait a delay : \n");       
             call_sys_write("[P2] Asking token\n");
-            call_sys_sem_P(semaphore);
+            fut_p(page, futex);
             call_sys_write("[P2] In critical section\n");
             user_delay(400000000);
             call_sys_write("[P2] Release the token \n");
-            call_sys_sem_V(semaphore);
+            fut_v(page,futex);
             call_sys_write("[P2] Finished \n");
             break;
-    };  
+    };   */
 }
 
 void user_process() {
     call_sys_write("Inside user process \n");
-    v1_dynamic_test_2();
+    fut_test_0();
     call_sys_write("end of user process \n");
     loop("");
 }
