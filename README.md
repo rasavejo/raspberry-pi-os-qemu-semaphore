@@ -293,7 +293,6 @@ This test is made to ensure that taking and releasing a token from a semaphore w
 
 ## V2 : Using Futex
 
-Por 
 
 # Acknowledgements
 
