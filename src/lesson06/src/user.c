@@ -13,7 +13,7 @@ void loop(char *str) {
     }
 }
 
-void v1_dynamic_test_2() {
+void sem_test_2() {
     call_sys_write("We will test the v1 through dynamic testing : 2 semaphore, 1 and 2 tokens and 4 tasks\n");
     unsigned long sem1 = call_sys_sem_new(2);
     unsigned long sem2 = call_sys_sem_new(1);
@@ -100,7 +100,7 @@ void v1_dynamic_test_2() {
 }
 
 
-void v1_dynamic_test_1() {
+void sem_test_1() {
     call_sys_write("We will test the v1 through dynamic testing : 1 semaphore, 2 tokens and 5 tasks \n");
     unsigned long semaphore = call_sys_sem_new(2);
     int pid = call_sys_fork();
@@ -186,7 +186,7 @@ void v1_dynamic_test_1() {
 }
 
 
-void v1_dynamic_test_0() {
+void sem_test_0() {
     call_sys_write("We will test the v1 through dynamic testing : 1 semaphore, 1 token and 2 tasks \n");
     unsigned long semaphore = call_sys_sem_new(1);
     int pid = call_sys_fork();
@@ -209,8 +209,37 @@ void v1_dynamic_test_0() {
             call_sys_sem_V(semaphore);
             call_sys_write("[P2] Finished \n");
             break;
-    }; 
-    
+    };  
+}
+
+
+
+void fut_test_0() {
+    call_sys_write("We will test the v1 through dynamic testing : 1 semaphore, 1 token and 2 tasks \n");
+    unsigned long page = sys_fut_get_page();
+    unsigned long semaphore = fut_new(page);
+    int pid = call_sys_fork();
+    switch(pid){
+        case 0 :
+            call_sys_write("[P0] Asking token\n");
+            call_sys_sem_P(semaphore);
+            call_sys_write("[P0] In critical section\n");
+            user_delay(400000000);
+            call_sys_write("[P0] Release the token \n");
+            call_sys_sem_V(semaphore);
+            call_sys_write("[P0] Finished \n");
+            break;
+        default : 
+            call_sys_write("[P2] wait a delay : \n");       
+            call_sys_write("[P2] Asking token\n");
+            call_sys_sem_P(semaphore);
+            call_sys_write("[P2] In critical section\n");
+            user_delay(400000000);
+            call_sys_write("[P2] Release the token \n");
+            call_sys_sem_V(semaphore);
+            call_sys_write("[P2] Finished \n");
+            break;
+    };  
 }
 
 void user_process() {
