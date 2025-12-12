@@ -6,7 +6,6 @@
 #include "sem.h"
 #include "fut.h"
 
-
 void sys_write(char * buf){
 	printf(buf);
 }
