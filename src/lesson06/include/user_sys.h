@@ -4,12 +4,13 @@
 void call_sys_write(char * buf);
 int call_sys_fork();
 void call_sys_exit();
-void call_sys_sem_new();
-void call_sys_sem_delete();
+unsigned long call_sys_sem_new(unsigned int count);
+void call_sys_sem_delete(unsigned long sem);
 void call_sys_sem_P();
-void call_sys_sem_v();
+void call_sys_sem_V();
 void call_sys_fut_get_page();
 void call_sys_fut_block();
+
 
 extern void user_delay ( unsigned long);
 extern unsigned long get_sp ( void );

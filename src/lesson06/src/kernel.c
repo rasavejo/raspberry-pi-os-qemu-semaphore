@@ -41,11 +41,14 @@ void kernel_main()
 	enable_interrupt_controller();
 	enable_irq();
 
+	printf("kernel finished initialization ...\n\r");
+
 	int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0);
 	if (res < 0) {
 		printf("error while starting kernel process");
 		return;
 	}
+	printf("kernel finished copy_process ...\n\r");
 
 	while (1){
 		schedule();
