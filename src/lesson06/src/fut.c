@@ -1,5 +1,4 @@
 #include "fut.h"
-#include "futasm.h"
 #include "sched.h"
 #include "mm.h"
 #include "irq.h"
@@ -9,28 +8,22 @@ unsigned long fut_page;
 
 #define FUT(page,s) *(unsigned long*)(page + s*32)
 
+
 void fut_table_init() {
     fut_page = allocate_kernel_page(); // already zeroed
     FUT(fut_page, 0) = (1 << 16) | 1;
 }
 
-
-unsigned long get_fut_page() {
-    map_page(current, current->mm.user_pages_count++, fut_page);
-	return fut_page + VA_START;
-}
-
-unsigned long fut_new(unsigned long page, unsigned int count) {
-    fut_p(page,0);
-    unsigned long fut = 0;
-    while ((FUT(page, fut)) % 2) fut++;
-    FUT(page,fut) = count << 16;
-    fut_v(page, 0);
-    return fut;
-}
-
-void fut_delete(unsigned long page, unsigned long fut) {
-    FUT(page,fut) = 0;
+unsigned long get_fut_page(){
+    // for(int i = 0; i < current->mm.user_pages_count; i++){
+    //     printf("%d physic %d virt %d\n" ,i, (int)current ->mm.user_pages[i].phys_addr,  (int)current ->mm.user_pages[i].virt_addr);
+    // }
+    unsigned long virt_addr = current->mm.user_pages[current->mm.user_pages_count-1].virt_addr + PAGE_SIZE;
+    map_page(current, virt_addr, fut_page - VA_START);
+    // for(int i = 0; i < current->mm.user_pages_count; i++){
+    //     printf("%d physic %d virt %d\n" ,i, (int)current ->mm.user_pages[i].phys_addr,  (int)current ->mm.user_pages[i].virt_addr);
+    // }
+	return virt_addr;
 }
 
 void fut_block(unsigned long fut) {
@@ -41,11 +34,3 @@ void fut_block(unsigned long fut) {
     schedule();
 }
 
-void fut_p(unsigned long page, unsigned long fut) {
-    int blocked = fut_pasm(fut, fut_page);
-    if (blocked) fut_block(fut);
-}
-
-void fut_v(unsigned long page, unsigned long fut) {
-    fut_vasm(fut, fut_page);
-}

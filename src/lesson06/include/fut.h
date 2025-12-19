@@ -1,10 +1,6 @@
 #ifndef _FUT_H
 #define _FUT_H
 
-
-
-
-
 unsigned long get_fut_page();
 void fut_table_init();
 unsigned long fut_new(unsigned long page,unsigned int count);
@@ -16,7 +12,4 @@ void fut_v(unsigned long page,unsigned long fut);
 
 void fut_block(unsigned long fut);
 
-
-
-
-#endif
+#endif  /* _FUT_H */

@@ -16,4 +16,14 @@ extern void user_delay ( unsigned long);
 extern unsigned long get_sp ( void );
 extern unsigned long get_pc ( void );
 
+extern int fut_pasm(unsigned long fut, unsigned long futaphore_page);
+extern void fut_vasm(unsigned long fut, unsigned long futaphore_page);
+
+extern void write_memory(int value, unsigned long futaphore_page);
+extern int read_memory(unsigned long futaphore_page);
+
+
+#define FUT(page,s) *(unsigned long*)(page + s*32)
+
+
 #endif  /*_USER_SYS_H */

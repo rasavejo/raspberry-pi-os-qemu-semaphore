@@ -17,6 +17,17 @@ user_delay:
 	bne user_delay
 	ret
 
+
+.globl write_memory
+write_memory:
+	str x0, [x1]
+	ret
+
+.globl read_memory
+read_memory:
+	ldr x0, [x0]
+	ret
+
 .globl call_sys_write
 call_sys_write:
 	mov w8, #SYS_WRITE_NUMBER
@@ -65,8 +76,44 @@ call_sys_fut_get_page:
 	svc #0
 	ret
 
-.globl call_sys_block
+.globl call_sys_fut_block
 call_sys_fut_block:
 	mov w8, #SYS_FUT_BLOCK_NUMBER
 	svc #0
 	ret
+
+
+
+
+.globl fut_pasm
+fut_pasm :
+    add x1,x0,x1
+fut_p_try :
+
+    LDXR x0,[x1]
+    CMP x0,#0
+    BNE fut_p_true
+    MOV x0, #1
+    RET
+fut_p_true : 
+    SUB x0, x0, #1
+    STXR w0,x2,[x1]
+    CMP x0,#0
+    BNE fut_p_try
+    
+    ret
+
+
+.globl fut_vasm
+fut_vasm :
+    add x1,x0,x1
+fut_v_try :
+
+    LDXR x0,[x1]
+    ADD x0, x0, #1
+    STXR w0,x2,[x1]
+    CMP x0,#0
+    BNE fut_v_try
+    
+    ret
+
