@@ -1,6 +1,8 @@
 #ifndef _FUT_H
 #define _FUT_H
 
+unsigned long get_kernel_fut_page();
+
 unsigned long get_fut_page();
 void fut_table_init();
 unsigned long fut_new(unsigned long page,unsigned int count);

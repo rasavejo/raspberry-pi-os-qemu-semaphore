@@ -14,7 +14,8 @@
 
 #define TASK_RUNNING			0
 #define TASK_ZOMBIE				1
-#define TASK_BLOCKED			2
+#define TASK_BLOCKED_SEM		2
+#define TASK_BLOCKED_FUT		3
 
 #define PF_KTHREAD				0x00000002
 

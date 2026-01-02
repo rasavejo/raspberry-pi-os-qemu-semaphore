@@ -3,10 +3,12 @@
 #include "mm.h"
 #include "irq.h"
 #include "printf.h"
+#include "user_sys.h"
 
-unsigned long fut_page;
 
 #define FUT(page,s) *(unsigned long*)(page + s*32)
+
+unsigned long fut_page;
 
 
 void fut_table_init() {
@@ -28,9 +30,13 @@ unsigned long get_fut_page(){
 
 void fut_block(unsigned long fut) {
     disable_irq();
-    current->state = TASK_BLOCKED;
+    current->state = TASK_BLOCKED_FUT;
     current->blocked_by = fut;
     enable_irq();
     schedule();
 }
 
+
+unsigned long get_kernel_fut_page() {
+    return fut_page;
+}

@@ -1,4 +1,4 @@
-CHAINPREFIX ?= aarch64-linux-gnu-
+CHAINPREFIX ?=
 
 COPS = -Wall -nostdlib -fno-stack-protector -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only -g -O0 -DUSE_QEMU
 ASMOPS = -Iinclude -g -DUSE_QEMU

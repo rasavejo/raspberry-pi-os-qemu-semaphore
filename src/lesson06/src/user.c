@@ -248,20 +248,22 @@ void fut_test_0() {
             call_sys_write("[P0] Asking token\n");
             fut_p(page, futex);
             call_sys_write("[P0] In critical section\n");
-            user_delay(400000000);
+            user_delay(4000000000);
             call_sys_write("[P0] Release the token \n");
             fut_v(page, futex);
             call_sys_write("[P0] Finished \n");
+            user_delay(4000000000);
                 break;
             default : 
                 call_sys_write("[P2] wait a delay : \n");       
                 call_sys_write("[P2] Asking token\n");
                 fut_p(page, futex);
                 call_sys_write("[P2] In critical section\n");
-                user_delay(400000000);
+                user_delay(4000000000);
                 call_sys_write("[P2] Release the token \n");
                 fut_v(page,futex);
                 call_sys_write("[P2] Finished \n");
+                user_delay(4000000000);
                 break;
         };   
     }

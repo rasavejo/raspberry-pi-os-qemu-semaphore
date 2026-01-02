@@ -87,32 +87,37 @@ call_sys_fut_block:
 
 .globl fut_pasm
 fut_pasm :
+	mov x3,#32
+	mul x0,x0,x3
     add x1,x0,x1
 fut_p_try :
 
     LDXR x0,[x1]
-    CMP x0,#0
+	mov x2,x0,lsr #16
+    CMP x2,#0
     BNE fut_p_true
-    MOV x0, #1
+    MOV x0, #1  // blocking
     RET
 fut_p_true : 
-    SUB x0, x0, #1
-    STXR w0,x2,[x1]
-    CMP x0,#0
+    SUB x0, x0, 0b10000000000000000  // 1 shift 16
+    STXR w2,x0,[x1]
+    CMP w2,#0
     BNE fut_p_try
-    
+    mov x0,#0  // not blocking
     ret
 
 
 .globl fut_vasm
 fut_vasm :
+	mov x3,#32
+	mul x0,x0,x3
     add x1,x0,x1
 fut_v_try :
 
     LDXR x0,[x1]
-    ADD x0, x0, #1
-    STXR w0,x2,[x1]
-    CMP x0,#0
+    ADD x0, x0, 0b10000000000000000     // 1 shift 16
+    STXR w2,x0,[x1]
+    CMP w2,#0
     BNE fut_v_try
     
     ret

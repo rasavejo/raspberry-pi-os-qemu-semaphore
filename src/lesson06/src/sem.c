@@ -43,7 +43,7 @@ void sem_p(unsigned long sem) {
         enable_irq();
     }
     else {
-        current->state = TASK_BLOCKED;
+        current->state = TASK_BLOCKED_SEM;
         current->blocked_by = sem;
         enable_irq();
         schedule();
