@@ -10,7 +10,6 @@
 .set SYS_FUT_GET_PAGE_NUMBER, 7
 .set SYS_FUT_BLOCK_NUMBER, 8
 
-
 .globl user_delay
 user_delay:
 	subs x0, x0, #1

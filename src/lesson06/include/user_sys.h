@@ -9,7 +9,7 @@ void call_sys_sem_delete(unsigned long sem);
 void call_sys_sem_P(unsigned long sem);
 void call_sys_sem_V(unsigned long sem);
 unsigned long call_sys_fut_get_page();
-void call_sys_fut_block();
+void call_sys_fut_block(unsigned long fut);
 
 
 extern void user_delay ( unsigned long);
