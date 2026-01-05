@@ -187,5 +187,23 @@ void fut_block(unsigned long fut) {
     schedule();
 }
 ```
+### Testing
+
+As futaphores work in very similar ways as semaphores, we ran their testing in the exact same fashion and with similar tests
+
+#### Dynamic Testing
+We tested our futaphores with :
+- Two tasks, one semaphore with a single token
+- Two tasks, one semaphore with two tokens
+- Two tasks, one semaphore with no tokens
+- Four tasks, one semaphore with a single token
+- Four tasks, two semapores with each a token
+
+All tests gave the expected outcomes, leading us to believe that in standard cases and in edge cases everything worked as intended.
 
 
+# Acknowledgements
+
+- Sergey Matyukevich, Alexandre Venito et al. made the educational kernel and most of the resources in https://github.com/s-matyukevich/raspberry-pi-os
+- Felix Xiaozhu Lin et al. adapted the codebase to make it work on QEMU and improved the content in https://github.com/fxlin/p1-kernel
+- Millian Poquet adapted the codebase for his operating system design course in https://github.com/mpoquet/raspberry-pi-os-qemu
