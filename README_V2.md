@@ -15,8 +15,6 @@ Therefore, we need to use lower level atomic operations. The ideal solution to o
 
 Therefore, we used an implementation similar to [ARM's implementation](https://documentation-service.arm.com/static/5efa1989dbdee951c1ccdea1?token) of semaphores based on **exclusive memory operations**.
 
-[ajouter image du code asm]
-
 This implementation doesn't provide actual mutual exclusion, but makes it so semaphores can never be written to by multiple tasks at once. Therefore, by making their functionality dependent on this write operation (meaning : if it fails, we try again), all our operations can become functionnally mutually exclusive.
 
 ### Futaphore operations
