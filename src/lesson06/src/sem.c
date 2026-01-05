@@ -30,12 +30,6 @@ unsigned int sem_count(unsigned long sem) {
     enable_irq();
 }
 
-unsigned int sem_count(unsigned long sem) {
-    disable_irq();
-    return SEM(sem) >> 16;
-    enable_irq();
-}
-
 void sem_delete(unsigned long sem) {
     disable_irq();
     SEM(sem) = 0;
@@ -49,7 +43,7 @@ void sem_p(unsigned long sem) {
         enable_irq();
     }
     else {
-        current->state = TASK_BLOCKED;
+        current->state = TASK_BLOCKED_SEM;
         current->blocked_by = sem;
         enable_irq();
         schedule();

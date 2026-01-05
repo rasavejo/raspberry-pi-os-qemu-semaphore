@@ -3,6 +3,7 @@
 #include "mm.h"
 #include "printf.h"
 #include "sem.h"
+#include "fut.h"
 #include "utils.h"
 
 static struct task_struct init_task = INIT_TASK;
@@ -13,10 +14,13 @@ struct task_struct *task[NR_TASKS] = {
 int nr_tasks = 1;
 
 void preempt_disable(void) { current->preempt_count++; }
+void preempt_enable(void) { current->preempt_count--; }
 
 void _schedule(void)
 {
+  //  printf("the scheduler.....\n");
 	preempt_disable();
+    unsigned long fut_page = get_fut_page();
 	int next,c;
 	struct task_struct * p;
 	while (1) {
@@ -27,14 +31,14 @@ void _schedule(void)
 			if (p && p->state == TASK_RUNNING && p->counter > c) {
 				c = p->counter;
 				next = i;
-			//	printf("task running c = %d\n\r", c);
-			//	printf("next = %d\n\r", next);
-            } else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) != 0) {
+	           } else if (p && p->state == TASK_BLOCKED_SEM && sem_count(p->blocked_by) != 0) {
                 sem_p(p->blocked_by);
                 p->state = TASK_RUNNING;
+            } else if (p && p->state == TASK_BLOCKED_FUT && fut_count(fut_page,p->blocked_by) != 0) {
+                int blocked = fut_pasm(p->blocked_by, fut_page);
+                if (!blocked) p->state = TASK_RUNNING;
             }
 		}
-	//	printf("in switch to\n\r");
 		if (c) {
 			break;
 		}
@@ -47,38 +51,6 @@ void _schedule(void)
 	}
 	switch_to(task[next]);
 	preempt_enable();
-}
-
-void _schedule(void) {
-    preempt_disable();
-    int next, c;
-    struct task_struct *p;
-    while (1) {
-        c = -1;
-        next = 0;
-        for (int i = 0; i < NR_TASKS; i++) {
-            p = task[i];
-            if (p && p->state == TASK_RUNNING && p->counter > c) {
-                c = p->counter;
-                next = i;
-            } else if (p && p->state == TASK_BLOCKED && sem_count(p->blocked_by) > 0) {
-                sem_p(p->blocked_by);
-                p->state = TASK_RUNNING;
-            }
-        }
-        if (c) {
-            printf("\nRunnung with value %d and next %d \n\n", c, next);
-            break;
-        }
-        for (int i = 0; i < NR_TASKS; i++) {
-            p = task[i];
-            if (p) {
-                p->counter = (p->counter >> 1) + p->priority;
-            }
-        }
-    }
-    switch_to(task[next]);
-    preempt_enable();
 }
 
 void schedule(void) {

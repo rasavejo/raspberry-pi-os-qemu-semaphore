@@ -3,7 +3,7 @@
 #include "sched.h"
 #include "utils.h"
 
-const unsigned int interval = 200000;
+const unsigned int interval = 200000;// 30000; //200000
 unsigned int curVal = 0;
 
 /*

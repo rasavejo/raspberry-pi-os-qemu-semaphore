@@ -7,12 +7,24 @@
 .set SYS_SEM_DELETE_NUMBER, 4
 .set SYS_SEM_P_NUMBER, 5
 .set SYS_SEM_V_NUMBER, 6
-
+.set SYS_FUT_GET_PAGE_NUMBER, 7
+.set SYS_FUT_BLOCK_NUMBER, 8
 
 .globl user_delay
 user_delay:
 	subs x0, x0, #1
 	bne user_delay
+	ret
+
+
+.globl write_memory
+write_memory:
+	str x0, [x1]
+	ret
+
+.globl read_memory
+read_memory:
+	ldr x0, [x0]
 	ret
 
 .globl call_sys_write
@@ -56,3 +68,56 @@ call_sys_sem_V:
 	mov w8, #SYS_SEM_V_NUMBER
 	svc #0
 	ret
+
+.globl call_sys_fut_get_page
+call_sys_fut_get_page:
+	mov w8, #SYS_FUT_GET_PAGE_NUMBER
+	svc #0
+	ret
+
+.globl call_sys_fut_block
+call_sys_fut_block:
+	mov w8, #SYS_FUT_BLOCK_NUMBER
+	svc #0
+	ret
+
+
+
+
+.globl fut_pasm
+fut_pasm :
+	mov x3,#32
+	mul x0,x0,x3
+    add x1,x0,x1
+fut_p_try :
+
+    LDXR x0,[x1]
+	mov x2,x0,lsr #16
+    CMP x2,#0
+    BNE fut_p_true
+    MOV x0, #1  // blocking
+    RET
+fut_p_true : 
+    SUB x0, x0, 0b10000000000000000  // 1 shift 16
+    STXR w2,x0,[x1]
+    CMP w2,#0
+    BNE fut_p_try
+    mov x0,#0  // not blocking
+    ret
+
+
+.globl fut_vasm
+fut_vasm :
+	mov x3,#32
+	mul x0,x0,x3
+    add x1,x0,x1
+fut_v_try :
+
+    LDXR x0,[x1]
+    ADD x0, x0, 0b10000000000000000     // 1 shift 16
+    STXR w2,x0,[x1]
+    CMP w2,#0
+    BNE fut_v_try
+    
+    ret
+

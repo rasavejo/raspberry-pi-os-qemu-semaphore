@@ -1,6 +1,7 @@
 #ifndef _FORK_H
 #define _FORK_H
 
+#include "fut.h"
 #include "sched.h"
 
 /*
