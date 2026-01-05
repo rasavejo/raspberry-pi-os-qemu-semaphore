@@ -122,7 +122,7 @@ This approach is inspired by [ARM's implementation](https://documentation-servic
 While we couldn't test this method on a multi-threaded system, its implementation should be robust enough to permit synchronization without problem.
 One very glaring "flaw" is the active wait loop used if the semaphore is already taken, however, in a normal context it is quite rare that this many processes try to give back a token at once, leading to very rare occurences of it looping even thrice.
 
-#### fut_v
+#### fut_p
 
 ```c
 void fut_p(unsigned long page, unsigned long fut) {

@@ -4,6 +4,7 @@ Adding semaphores to the mini-OS, previously used to learn how OSes work.
 
 ## Goal 
 
+The V2 documentation can be found in the README_V2.md file.
 ## V1 : Using syscalls
 
 ### Semaphores operations
