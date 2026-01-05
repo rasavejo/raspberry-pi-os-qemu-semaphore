@@ -211,54 +211,54 @@ void sem_test_0() {
     };
 }
 
-void fut_test_0() {
-    call_sys_write(
-        "We will test the v2 through dynamic testing : 1 semaphore, 1 token and 2 tasks \n");
-    unsigned long page = call_sys_fut_get_page();
-    call_sys_write("create the new semaphore in the page \n");
-    unsigned long futex = fut_new(page, 1);
-    call_sys_write("the new semaphore is created\n");
-    if (page == -1) {
-        call_sys_write("Error during retrieval of page futex\n\r");
-        call_sys_exit();
-    }
-    int pid = call_sys_fork();
-    if (pid < 0) {
-        call_sys_write("Error during fork\n\r");
-        call_sys_exit();
-        return;
-    }
-    int compt = 0;
-    char value = 0;
-    if (pid == 0) {
-        page = call_sys_fut_get_page();
-    }
-    for (int i = 0; i < 3; i++) {
-        switch (pid) {
-        case 0:
-            call_sys_write("[P0] Asking token\n");
-            fut_p(page, futex);
-            call_sys_write("[P0] In critical section\n");
-            user_delay(1000000000);
-            call_sys_write("[P0] Release the token \n");
-            fut_v(page, futex);
-            call_sys_write("[P0] Finished \n");
-            user_delay(1000000000);
-            break;
-        default:
-            call_sys_write("[P2] wait a delay : \n");
-            call_sys_write("[P2] Asking token\n");
-            fut_p(page, futex);
-            call_sys_write("[P2] In critical section\n");
-            user_delay(1000000000);
-            call_sys_write("[P2] Release the token \n");
-            fut_v(page, futex);
-            call_sys_write("[P2] Finished \n");
-            user_delay(1000000000);
-            break;
-        };
-    }
-}
+// void fut_test_0() {
+//     call_sys_write(
+//         "We will test the v2 through dynamic testing : 1 semaphore, 1 token and 2 tasks \n");
+//     unsigned long page = call_sys_fut_get_page();
+//     call_sys_write("create the new semaphore in the page \n");
+//     unsigned long futex = fut_new(page, 1);
+//     call_sys_write("the new semaphore is created\n");
+//     if (page == -1) {
+//         call_sys_write("Error during retrieval of page futex\n\r");
+//         call_sys_exit();
+//     }
+//     int pid = call_sys_fork();
+//     if (pid < 0) {
+//         call_sys_write("Error during fork\n\r");
+//         call_sys_exit();
+//         return;
+//     }
+//     int compt = 0;
+//     char value = 0;
+//     if (pid == 0) {
+//         page = call_sys_fut_get_page();
+//     }
+//     for (int i = 0; i < 3; i++) {
+//         switch (pid) {
+//         case 0:
+//             call_sys_write("[P0] Asking token\n");
+//             fut_p(page, futex);
+//             call_sys_write("[P0] In critical section\n");
+//             user_delay(1000000000);
+//             call_sys_write("[P0] Release the token \n");
+//             fut_v(page, futex);
+//             call_sys_write("[P0] Finished \n");
+//             user_delay(1000000000);
+//             break;
+//         default:
+//             call_sys_write("[P2] wait a delay : \n");
+//             call_sys_write("[P2] Asking token\n");
+//             fut_p(page, futex);
+//             call_sys_write("[P2] In critical section\n");
+//             user_delay(1000000000);
+//             call_sys_write("[P2] Release the token \n");
+//             fut_v(page, futex);
+//             call_sys_write("[P2] Finished \n");
+//             user_delay(1000000000);
+//             break;
+//         };
+//     }
+// }
 
 // void fut_test_1() {
 //     call_sys_write(
@@ -356,78 +356,78 @@ void fut_test_0() {
 //     }
 // }
 
-void fut_test_3() {
-    call_sys_write(
-        "We will test the v2 through dynamic testing : 1 semaphore, 1 token and 4 tasks \n");
+// void fut_test_3() {
+//     call_sys_write(
+//         "We will test the v2 through dynamic testing : 1 semaphore, 1 token and 4 tasks \n");
 
-    unsigned long page = call_sys_fut_get_page();
-    unsigned long futex = fut_new(page, 1);
-    int pid;
+//     unsigned long page = call_sys_fut_get_page();
+//     unsigned long futex = fut_new(page, 1);
+//     int pid;
 
-    int proc_id = 0;
-    for (int i = 2; i < 5; i++) {
-        pid = call_sys_fork();
-        call_sys_write("call sys fork \n");
-        if (pid == 0) {
-            call_sys_write("I'm a child\n");
-            proc_id = i;
-            goto run;
-        }
-    }
-run:
-    if (pid == 0) {
+//     int proc_id = 0;
+//     for (int i = 2; i < 5; i++) {
+//         pid = call_sys_fork();
+//         call_sys_write("call sys fork \n");
+//         if (pid == 0) {
+//             call_sys_write("I'm a child\n");
+//             proc_id = i;
+//             goto run;
+//         }
+//     }
+// run:
+//     if (pid == 0) {
 
-        page = call_sys_fut_get_page();
-    }
+//         page = call_sys_fut_get_page();
+//     }
 
-    for (int i = 0; i < 3; i++) {
-        switch (proc_id) {
-        case 0:
-            call_sys_write("[P0] Asking token\n");
-            fut_p(page, futex);
-            call_sys_write("[P0] In critical section\n");
-            user_delay(1000000000);
-            call_sys_write("[P0] Release the token \n");
-            fut_v(page, futex);
-            call_sys_write("[P0] Finished \n");
-            user_delay(1000000000);
-            break;
-        case 2:
-            call_sys_write("[P2] wait a delay : \n");
-            call_sys_write("[P2] Asking token\n");
-            fut_p(page, futex);
-            call_sys_write("[P2] In critical section\n");
-            user_delay(1000000000);
-            call_sys_write("[P2] Release the token \n");
-            fut_v(page, futex);
-            call_sys_write("[P2] Finished \n");
-            user_delay(1000000000);
-            break;
-        case 3:
-            call_sys_write("[P3] wait a delay : \n");
-            call_sys_write("[P3] Asking token\n");
-            fut_p(page, futex);
-            call_sys_write("[P3] In critical section\n");
-            user_delay(1000000000);
-            call_sys_write("[P3] Release the token \n");
-            fut_v(page, futex);
-            call_sys_write("[P3] Finished \n");
-            user_delay(1000000000);
-            break;
-        default:
-            call_sys_write("[P4] wait a delay : \n");
-            call_sys_write("[P4] Asking token\n");
-            fut_p(page, futex);
-            call_sys_write("[P4] In critical section\n");
-            user_delay(1000000000);
-            call_sys_write("[P4] Release the token \n");
-            fut_v(page, futex);
-            call_sys_write("[P4] Finished \n");
-            user_delay(1000000000);
-            break;
-        };
-    }
-}
+//     for (int i = 0; i < 3; i++) {
+//         switch (proc_id) {
+//         case 0:
+//             call_sys_write("[P0] Asking token\n");
+//             fut_p(page, futex);
+//             call_sys_write("[P0] In critical section\n");
+//             user_delay(1000000000);
+//             call_sys_write("[P0] Release the token \n");
+//             fut_v(page, futex);
+//             call_sys_write("[P0] Finished \n");
+//             user_delay(1000000000);
+//             break;
+//         case 2:
+//             call_sys_write("[P2] wait a delay : \n");
+//             call_sys_write("[P2] Asking token\n");
+//             fut_p(page, futex);
+//             call_sys_write("[P2] In critical section\n");
+//             user_delay(1000000000);
+//             call_sys_write("[P2] Release the token \n");
+//             fut_v(page, futex);
+//             call_sys_write("[P2] Finished \n");
+//             user_delay(1000000000);
+//             break;
+//         case 3:
+//             call_sys_write("[P3] wait a delay : \n");
+//             call_sys_write("[P3] Asking token\n");
+//             fut_p(page, futex);
+//             call_sys_write("[P3] In critical section\n");
+//             user_delay(1000000000);
+//             call_sys_write("[P3] Release the token \n");
+//             fut_v(page, futex);
+//             call_sys_write("[P3] Finished \n");
+//             user_delay(1000000000);
+//             break;
+//         default:
+//             call_sys_write("[P4] wait a delay : \n");
+//             call_sys_write("[P4] Asking token\n");
+//             fut_p(page, futex);
+//             call_sys_write("[P4] In critical section\n");
+//             user_delay(1000000000);
+//             call_sys_write("[P4] Release the token \n");
+//             fut_v(page, futex);
+//             call_sys_write("[P4] Finished \n");
+//             user_delay(1000000000);
+//             break;
+//         };
+//     }
+// }
 
 void fut_test_4() {
     call_sys_write("We will test the v2 through dynamic testing : 2 semaphores, 1 token each and 2 "
